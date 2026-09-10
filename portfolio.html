@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="Logo.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Portfolio — G7 | Ankush Sawant</title>
+  <meta name="description" content="The complete G-7 project portfolio — web builds and business automation tools, browsable in one continuous scroll." />
+  <link rel="canonical" href="https://g-7.shop/portfolio.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b1120;
+      color: #f1f5f9;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      height: 100vh;
+    }
+    .scroll-wrapper {
+      position: relative;
+      z-index: 2;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .horizontal-track {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 32px;
+      padding: 0 5vw;
+      height: 80vh;
+      align-items: center;
+      will-change: transform;
+      transition: transform 0.1s linear;
+    }
+    .project-card {
+      flex: 0 0 auto;
+      width: 420px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      will-change: transform;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-height: 500px;
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
+    .project-card.visible { opacity: 1; transform: scale(1); }
+    .project-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .card-media {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      background: #0a0f1a;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .slider-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+    .slide {
+      flex: 0 0 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0f1a;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      user-select: none;
+    }
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 5;
+      font-size: 13px;
+      transition: background 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+    .project-card:hover .slider-btn { opacity: 1; }
+    .slider-btn:hover { background: rgba(0, 0, 0, 0.8); }
+    .slider-prev { left: 8px; }
+    .slider-next { right: 8px; }
+    .slider-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    .slider-dots .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .slider-dots .dot.active { background: #fff; transform: scale(1.25); }
+    .slider-dots .dot:hover { background: rgba(255, 255, 255, 0.6); }
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 30px;
+      background: rgba(37, 99, 235, 0.9);
+      color: #fff;
+      z-index: 6;
+      letter-spacing: 0.05em;
+      backdrop-filter: blur(4px);
+    }
+    .card-badge.auto { background: rgba(192, 122, 18, 0.9); }
+    .card-body {
+      padding: 18px 22px 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-body h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #f1f5f9;
+    }
+    .card-body .desc {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 14px;
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .card-meta span {
+      font-size: 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 14px;
+      border-radius: 20px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .card-meta .impact { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .card-meta .type-web { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+    .card-meta .type-auto { background: rgba(192, 122, 18, 0.15); color: #f59e0b; }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #60a5fa;
+      text-decoration: none;
+      transition: gap 0.2s, color 0.2s;
+      margin-top: 4px;
+    }
+    .card-link:hover { gap: 14px; color: #93bbfc; }
+
+    .top-left-controls {
+      position: fixed;
+      top: 22px;
+      left: 24px;
+      z-index: 11;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    @media (max-width: 480px) { .top-left-controls { top: 14px; left: 14px; gap: 8px; } }
+
+    .back-home {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 30px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .back-home:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); }
+    @media (max-width: 480px) { .back-home { font-size: 0.7rem; padding: 6px 12px; } }
+
+    .top-ui {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      padding: 24px 30px 10px;
+      background: linear-gradient(to bottom, rgba(11, 17, 32, 0.9) 0%, transparent 100%);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .top-ui > * { pointer-events: auto; }
+    .portfolio-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .portfolio-header h1 {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #94b9ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .portfolio-header p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+    .header-stats {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 4px;
+    }
+    .header-stats div {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(8px);
+      padding: 4px 16px;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+    .header-stats i { color: #60a5fa; margin-right: 6px; }
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 6px 20px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-btn:hover { background: rgba(255, 255, 255, 0.08); color: #f1f5f9; }
+    .filter-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; box-shadow: 0 8px 30px rgba(37,99,235,0.25); }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 10px;
+      pointer-events: auto;
+      position: relative;
+      left: -24px;
+    }
+    @media (max-width: 480px) { .controls { left: -10px; } }
+    .controls button {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .controls button:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .controls button i { font-size: 0.9rem; }
+    .mode-btn.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+      box-shadow: 0 8px 30px rgba(37,99,235,0.25);
+    }
+    .controls .progress-text {
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .scroll-progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 10;
+    }
+    .scroll-progress .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      border-radius: 0 2px 2px 0;
+      transition: width 0.1s linear;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: grid;
+      place-items: center;
+      background: rgba(2, 2, 5, 0.92);
+      backdrop-filter: blur(16px);
+      padding: 24px;
+      cursor: zoom-out;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .lightbox.open { opacity: 1; visibility: visible; }
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 86vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.12); }
+    body.lightbox-open { overflow: hidden; }
+
+    @media (max-width: 1024px) { .project-card { width: 360px; } .horizontal-track { gap: 24px; padding: 0 4vw; } }
+    @media (max-width: 768px) { .project-card { width: 300px; max-height: 420px; } .horizontal-track { gap: 20px; padding: 0 3vw; } .top-ui { padding: 16px 16px 8px; } .portfolio-header h1 { font-size: 1.6rem; } .slider-btn { opacity: 0.6; width: 28px; height: 28px; font-size: 11px; } }
+    @media (max-width: 480px) { .project-card { width: 260px; max-height: 380px; } .horizontal-track { gap: 16px; padding: 0 2vw; } .header-stats div { font-size: 0.65rem; padding: 2px 12px; } .filter-btn { font-size: 0.7rem; padding: 4px 14px; } .filter-tabs { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+
+  <div class="scroll-progress"><div class="bar" id="scrollBar"></div></div>
+
+  <div class="top-left-controls">
+    <a href="index.html" class="back-home" aria-label="Back to G-7 home"><i class="fas fa-arrow-left"></i> G-7</a>
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="web">🌐 Web</button>
+      <button class="filter-btn" data-filter="automation">⚙️ Automation</button>
+    </div>
+  </div>
+
+  <div class="top-ui">
+    <header class="portfolio-header">
+      <h1>Full Portfolio</h1>
+      <div class="header-stats">
+        <div><i class="fas fa-layer-group"></i> <span id="totalProjects">0</span> projects</div>
+      </div>
+    </header>
+    <div class="controls">
+      <button id="modeAllBtn" class="mode-btn active"><i class="fas fa-play"></i> See All Projects</button>
+      <button id="modeOneBtn" class="mode-btn"><i class="fas fa-list-ol"></i> One by One</button>
+      <span class="progress-text" id="progressText">0%</span>
+    </div>
+  </div>
+
+  <div class="scroll-wrapper">
+    <div class="horizontal-track" id="horizontalTrack"></div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <img id="lightboxImg" src="" alt="Full size" />
+  </div>
+
+  <script>
+    // ================================================================
+    // 2.  PROJECT DATA
+    // ================================================================
+    // Shared with index.html — once data/projects.json exists in the repo,
+    // both pages read from the same source automatically.
+    const DATA_URL = "data/projects.json";
+    let projectData = [];
+    const SAMPLE_PROJECTS = [{
+      id: 1,
+      name: "Saaj Shrungaar",
+      type: "web",
+      description: "Custom jewellery catalogue with live filtering, admin panel, and WhatsApp enquiry integration.",
+      status: "Active",
+      date: "2026-08-20",
+      link: "https://www.instagram.com/saaj_by_panu05/",
+      impact: "more WhatsApp enquiries",
+      images: [
+        "https://picsum.photos/id/1060/800/500",
+        "https://picsum.photos/id/1062/800/500",
+        "https://picsum.photos/id/1068/800/500",
+        "https://picsum.photos/id/1074/800/500"
+      ]
+    }, {
+      id: 2,
+      name: "SmartResumeATS",
+      type: "web",
+      description: "ATS resume scoring tool with keyword extraction and an animated results dashboard.",
+      status: "Active",
+      date: "2026-08-10",
+      link: "#",
+      impact: "500+ resumes scored",
+      images: [
+        "https://picsum.photos/id/1015/800/500",
+        "https://picsum.photos/id/1018/800/500",
+        "https://picsum.photos/id/1020/800/500"
+      ]
+    }, {
+      id: 3,
+      name: "Agency Landing Page",
+      type: "web",
+      description: "Premium single-page site with a self‑updating portfolio section and dark mode.",
+      status: "Active",
+      date: "2026-07-28",
+      link: "#",
+      impact: "zero‑maintenance updates",
+      images: [
+        "https://picsum.photos/id/1024/800/500",
+        "https://picsum.photos/id/1027/800/500",
+        "https://picsum.photos/id/1035/800/500"
+      ]
+    }, {
+      id: 4,
+      name: "ACCUPILOT",
+      type: "automation",
+      description: "VBA automation tool that cut ocean‑export documentation errors by over 70%.",
+      status: "Active",
+      date: "2026-08-15",
+      link: "#",
+      impact: "significantly fewer errors",
+      images: [
+        "https://picsum.photos/id/1040/800/500",
+        "https://picsum.photos/id/1044/800/500",
+        "https://picsum.photos/id/1048/800/500"
+      ]
+    }, {
+      id: 5,
+      name: "Container Description Reconciler",
+      type: "automation",
+      description: "Excel VBA macro using LCS diff to flag mismatched container descriptions in seconds.",
+      status: "Active",
+      date: "2026-07-30",
+      link: "#",
+      impact: "hours of checking cut to minutes",
+      images: [
+        "https://picsum.photos/id/1050/800/500",
+        "https://picsum.photos/id/1055/800/500",
+        "https://picsum.photos/id/1060/800/500"
+      ]
+    }, {
+      id: 6,
+      name: "JD Keyword Extractor",
+      type: "automation",
+      description: "NLP‑style keyword matcher that scores resumes against job descriptions instantly.",
+      status: "Active",
+      date: "2026-07-05",
+      link: "#",
+      impact: "screens a resume in seconds",
+      images: [
+        "https://picsum.photos/id/1066/800/500",
+        "https://picsum.photos/id/1069/800/500",
+        "https://picsum.photos/id/1070/800/500",
+        "https://picsum.photos/id/1074/800/500"
+      ]
+    }];
+
+    async function loadProjectData() {
+      try {
+        const res = await fetch(DATA_URL);
+        if (!res.ok) throw new Error(`Fetch returned ${res.status}`);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : data.projects;
+        if (!Array.isArray(list) || !list.length) throw new Error("Empty data file");
+        // Normalize to this page's field names (name vs projectName)
+        projectData = list
+          .filter(p => p && String(p.status || "").toLowerCase() === "active")
+          .map(p => ({
+            id: p.id,
+            name: p.projectName || p.name,
+            type: p.type,
+            description: p.description,
+            status: p.status,
+            date: p.date,
+            link: p.link,
+            impact: p.impact,
+            images: Array.isArray(p.images) ? p.images
+                  : Array.isArray(p.media) ? p.media.filter(m => m.type !== "video").map(m => m.url)
+                  : []
+          }));
+      } catch (err) {
+        console.warn("portfolio.html: falling back to sample data —", err.message);
+        projectData = SAMPLE_PROJECTS;
+      }
+      renderProjects('all');
+    }
+
+
+    // ================================================================
+    // 3.  SLIDER CONTROLLER
+    // ================================================================
+    function initSlider(card) {
+      const track = card.querySelector('.slider-track');
+      const dots = card.querySelectorAll('.dot');
+      const prev = card.querySelector('.slider-prev');
+      const next = card.querySelector('.slider-next');
+      const total = track ? track.children.length : 1;
+      let current = 0;
+      let interval = null;
+      const AUTOPLAY = 3800;
+
+      function goTo(index) {
+        if (index < 0) index = total - 1;
+        if (index >= total) index = 0;
+        current = index;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }
+
+      function nextSlide() { goTo(current + 1); }
+      function prevSlide() { goTo(current - 1); }
+
+      function startAuto() {
+        stopAuto();
+        if (total <= 1) return;
+        interval = setInterval(nextSlide, AUTOPLAY);
+      }
+      function stopAuto() {
+        if (interval) { clearInterval(interval); interval = null; }
+      }
+
+      if (prev) prev.addEventListener('click', (e) => { e.stopPropagation(); prevSlide(); startAuto(); });
+      if (next) next.addEventListener('click', (e) => { e.stopPropagation(); nextSlide(); startAuto(); });
+      dots.forEach(d => {
+        d.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(d.dataset.index, 10);
+          if (!isNaN(idx)) { goTo(idx); startAuto(); }
+        });
+      });
+
+      card.addEventListener('mouseenter', stopAuto);
+      card.addEventListener('mouseleave', startAuto);
+
+      let startX = 0, dragging = false;
+      card.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        dragging = true;
+        stopAuto();
+      }, { passive: true });
+      card.addEventListener('touchmove', (e) => {
+        if (!dragging) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        if (Math.abs(dx) > 30) {
+          e.preventDefault();
+          if (dx > 0) prevSlide(); else nextSlide();
+          dragging = false;
+          startAuto();
+        }
+      }, { passive: false });
+      card.addEventListener('touchend', () => { dragging = false; startAuto(); }, { passive: true });
+
+      if (total > 1) startAuto();
+    }
+
+
+    // ================================================================
+    // 4.  RENDER + INFINITE LOOP
+    // ================================================================
+    let allCards = [];
+    let currentFilter = 'all';
+    let setWidth = 0;
+    let totalCards = 0;
+
+    function renderProjects(filter = 'all') {
+      currentFilter = filter;
+      const track = document.getElementById('horizontalTrack');
+      const filtered = filter === 'all' ? projectData : projectData.filter(p => p.type === filter);
+
+      if (filtered.length === 0) {
+        track.innerHTML =
+          `<div style="color:#94a3b8; font-size:1.2rem; padding:40px; text-align:center; width:100%;">No projects match this filter.</div>`;
+        allCards = [];
+        updateStats();
+        return;
+      }
+
+      let singleSetHtml = '';
+      filtered.forEach((p, idx) => {
+        const isWeb = p.type === 'web';
+        const badgeClass = isWeb ? '' : 'auto';
+        const typeLabel = isWeb ? 'Web' : 'Automation';
+        const typeTag = isWeb ? 'type-web' : 'type-auto';
+
+        const images = p.images || [];
+        let slidesHtml = '';
+        if (images.length === 0) {
+          slidesHtml =
+            `<div class="slide"><div style="color:rgba(255,255,255,0.15);font-size:14px;">No image</div></div>`;
+        } else {
+          images.forEach((url, i) => {
+            slidesHtml += `
+                <div class="slide" data-index="${i}">
+                  <img src="${url}" alt="${p.name} — ${i+1}" loading="lazy" />
+                </div>
+              `;
+          });
+        }
+
+        const totalSlides = images.length;
+        const dotsHtml = Array.from({ length: totalSlides }, (_, i) =>
+          `<button class="dot ${i===0?'active':''}" data-index="${i}" aria-label="Slide ${i+1}"></button>`
+        ).join('');
+
+        singleSetHtml += `
+            <div class="project-card visible" data-type="${p.type}" data-index="${idx}">
+              <div class="card-media">
+                <div class="slider-track" style="transform:translateX(0%);">
+                  ${slidesHtml}
+                </div>
+                ${totalSlides > 1 ? `
+                <button class="slider-btn slider-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-btn slider-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+                <div class="slider-dots">${dotsHtml}</div>
+                ` : ''}
+                <span class="card-badge ${badgeClass}">${typeLabel}</span>
+              </div>
+              <div class="card-body">
+                <h3>${p.name}</h3>
+                <div class="desc">${p.description}</div>
+                <div class="card-meta">
+                  <span class="${typeTag}">${typeLabel}</span>
+                  <span>${p.status}</span>
+                  <span>${p.date}</span>
+                  ${p.impact ? `<span class="impact"><i class="fas fa-arrow-trend-up"></i> ${p.impact}</span>` : ''}
+                </div>
+                <a href="${p.link}" target="_blank" rel="noopener" class="card-link">
+                  View project <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          `;
+      });
+
+      track.innerHTML = singleSetHtml + singleSetHtml;
+
+      document.querySelectorAll('.project-card').forEach(card => initSlider(card));
+
+      allCards = document.querySelectorAll('.project-card');
+      totalCards = filtered.length;
+      updateStats();
+
+      requestAnimationFrame(() => {
+        const firstCard = track.querySelector('.project-card');
+        if (firstCard) {
+          const cardWidth = firstCard.offsetWidth + 32;
+          setWidth = totalCards * cardWidth;
+        }
+        progress = 0;
+        rounds = 0;
+        speed = fastSpeed;
+        updateUI();
+        setMotionMode(motionMode);
+      });
+    }
+
+
+    // ================================================================
+    // 5.  AUTO-SCROLL ENGINE
+    // ================================================================
+    let progress = 0;
+    let rounds = 0;
+    let speed = 0;
+    const fastSpeed = 1.0;
+    const slowSpeed = 0.2;
+    let lastTime = 0;
+
+    // Motion mode: 'all' = continuous auto-scroll through everything,
+    // 'one' = step through projects one at a time.
+    let motionMode = 'all';
+    let oneByOneTimer = null;
+    const ONE_BY_ONE_DELAY = 2400;
+
+    const trackEl = document.getElementById('horizontalTrack');
+    const progressBar = document.getElementById('scrollBar');
+    const progressText = document.getElementById('progressText');
+
+    function updateUI() {
+      const pct = Math.round(progress * 100);
+      progressBar.style.width = pct + '%';
+      progressText.textContent = pct + '%';
+      allCards.forEach((card, index) => {
+        const waveY = Math.sin(index * 0.7 + progress * 12) * 18;
+        const waveRot = Math.sin(index * 0.5 + progress * 8) * 2;
+        card.style.transform = `translateY(${waveY}px) rotate(${waveRot}deg)`;
+      });
+    }
+
+    function updateTrackPosition() {
+      if (!trackEl || allCards.length === 0) return;
+      const viewportWidth = window.innerWidth;
+      const maxTranslate = Math.max(0, setWidth - viewportWidth + 40);
+      const translateX = -progress * maxTranslate;
+      trackEl.style.transform = `translateX(${translateX}px)`;
+    }
+
+    function stepOneByOne() {
+      if (totalCards <= 0) return;
+      progress += 1 / totalCards;
+      if (progress >= 1) progress = 0;
+      updateUI();
+      updateTrackPosition();
+    }
+
+    function setMotionMode(mode) {
+      motionMode = mode;
+      document.getElementById('modeAllBtn').classList.toggle('active', mode === 'all');
+      document.getElementById('modeOneBtn').classList.toggle('active', mode === 'one');
+
+      if (oneByOneTimer) {
+        clearInterval(oneByOneTimer);
+        oneByOneTimer = null;
+      }
+
+      if (mode === 'one') {
+        if (trackEl) trackEl.style.transitionDuration = '0.7s';
+        oneByOneTimer = setInterval(stepOneByOne, ONE_BY_ONE_DELAY);
+      } else {
+        if (trackEl) trackEl.style.transitionDuration = '';
+        speed = fastSpeed;
+        rounds = 0;
+      }
+    }
+
+    function loopStep(timestamp) {
+      if (!lastTime) lastTime = timestamp;
+      const delta = Math.min((timestamp - lastTime) / 1000, 0.1);
+      lastTime = timestamp;
+
+      if (motionMode === 'all' && speed > 0 && setWidth > 0) {
+        progress += speed * delta;
+        if (progress >= 1.0) {
+          progress = 0;
+          rounds++;
+          if (rounds >= 2 && speed === fastSpeed) {
+            speed = slowSpeed;
+          }
+        }
+        updateUI();
+        updateTrackPosition();
+      }
+      requestAnimationFrame(loopStep);
+    }
+    requestAnimationFrame(loopStep);
+
+
+    // ================================================================
+    // 6.  CONTROLS
+    // ================================================================
+    document.getElementById('modeAllBtn').addEventListener('click', () => setMotionMode('all'));
+    document.getElementById('modeOneBtn').addEventListener('click', () => setMotionMode('one'));
+
+
+    // ================================================================
+    // 7.  FILTER
+    // ================================================================
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderProjects(this.dataset.filter);
+        setTimeout(() => { updateUI(); updateTrackPosition(); }, 100);
+      });
+    });
+
+
+    // ================================================================
+    // 8.  LIGHTBOX
+    // ================================================================
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeBtn = document.getElementById('lightboxClose');
+
+    document.addEventListener('click', (e) => {
+      const img = e.target.closest('.slide img');
+      if (img) {
+        e.preventDefault();
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || '';
+        lightbox.classList.add('open');
+        document.body.classList.add('lightbox-open');
+      }
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.classList.remove('lightbox-open');
+    }
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+
+    // ================================================================
+    // 9.  STATS & INIT
+    // ================================================================
+    function updateStats() {
+      document.getElementById('totalProjects').textContent = projectData.length;
+    }
+
+    window.addEventListener('resize', () => {
+      if (setWidth > 0) updateTrackPosition();
+    });
+
+    loadProjectData();
+  </script>
+</body>
+</html>
